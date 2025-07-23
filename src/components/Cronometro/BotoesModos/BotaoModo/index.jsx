@@ -1,11 +1,22 @@
+import { useCallback } from "react";
+import { useCronometroStore, useModo } from "../../../../store";
 import styles from "./styles.module.css";
 export default function BotaoModo({ children, modoBotao }) {
+  const setModo = useCronometroStore((state) => state.setModoCronometro);
+
+  const activedMode = useModo().id === modoBotao;
+
+  const handleModo = useCallback(() => {
+    setModo(modoBotao);
+  }, [modoBotao, setModo]);
+
   return (
     <button
       className={`
         ${styles["cronometer-modes__button"]}
-        ${styles["cronometer-modes__button--active"]}
+        ${activedMode ? styles["cronometer-modes__button--active"] : ""}
       `}
+      onClick={handleModo}
     >
       {children}
     </button>

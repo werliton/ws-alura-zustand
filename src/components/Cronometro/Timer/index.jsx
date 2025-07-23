@@ -1,5 +1,5 @@
 import styles from "./styles.module.css";
 
-export default function Timer() {
-  return <div className={styles["cronometer-timer"]}>30</div>;
+export default function Timer({ time }) {
+  return <div className={styles["cronometer-timer"]}>{time}</div>;
 }
