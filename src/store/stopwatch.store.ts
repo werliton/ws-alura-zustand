@@ -1,4 +1,8 @@
 import { create } from "zustand";
+/** @ts-ignore */
+import playMusica from "../assets/sons/play.wav";
+/** @ts-ignore */
+import pauseMusica from "../assets/sons/pause.mp3";
 
 /** types */
 enum STOPWATCH_MODE {
@@ -19,7 +23,7 @@ interface StopWatchStoreState {
   start(): void;
   pause(): void;
   reset(): void;
-  enableMusic?: () => void;
+  toggleActiveMusic(): void;
   setMode(mode: STOPWATCH_MODE): void;
   countdowntime: number;
   intervalId: number;
@@ -55,14 +59,13 @@ const STOPWATCH_MODE_STATE: Record<STOPWATCH_MODE, STOPWATCH> = {
 
 export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
   const playMusic = () => {
-    const audio = new Audio("../assets/sons/play.wav");
-    audio.loop = true;
+    const audio = new Audio(playMusica);
     audio.play();
   };
 
   const pauseMusic = () => {
-    const audio = new Audio("../assets/sons/pause.mp3");
-    audio.pause();
+    const audio = new Audio(pauseMusica);
+    audio.play();
   };
 
   const runStopWatch = () => {
@@ -72,6 +75,7 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
       decrementCountdowntime();
     } else {
       stopCountdown();
+      pauseMusic();
     }
   };
 
@@ -87,6 +91,7 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
       clearInterval(intervalId);
       set({
         isStarted: false,
+        isPlayMusic: false,
       });
     }
   };
@@ -107,6 +112,8 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
     start: () => {
       const _intervalId = setInterval(runStopWatch, 1000);
 
+      playMusic();
+
       set({
         intervalId: _intervalId,
         isStarted: !get().isStarted,
@@ -115,12 +122,15 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
     pause: () => {
       stopCountdown();
     },
+    toggleActiveMusic: () => {
+      set({
+        isPlayMusic: !get().isPlayMusic,
+      });
+    },
     reset: () => {},
   };
 });
 
 // selectors
-
-// implementar a decisao de exibir o intervalid auqi
 
 export const useCountdownTime = () => useStopWatchStore((state) => state.countdowntime);

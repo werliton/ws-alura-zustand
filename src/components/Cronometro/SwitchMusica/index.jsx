@@ -1,12 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import styles from "./styles.module.css";
 import musicaSom from "/src/assets/sons/luna-rise-part-one.mp3";
+import { useStopWatchStore } from "../../../store";
 
 export default function SwitchMusica() {
-  const [musica] = useState(new Audio(musicaSom));
+  const musicaRef = useRef(new Audio(musicaSom));
+  const { toggleActiveMusic, isPlayMusic } = useStopWatchStore();
 
   function alternarMusica() {
-    if (musica.paused) {
+    const musica = musicaRef.current;
+    toggleActiveMusic();
+
+    if (musica.paused || isPlayMusic) {
       musica.play();
     } else {
       musica.pause();
@@ -14,8 +19,18 @@ export default function SwitchMusica() {
   }
 
   useEffect(() => {
-    return () => musica.pause();
-  }, [musica]);
+    const musicaElement = musicaRef.current;
+
+    return () => {
+      musicaElement.pause();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isPlayMusic) {
+      musicaRef.current.pause();
+    }
+  }, [isPlayMusic]);
 
   return (
     <label className={styles["toggle"]}>
@@ -24,6 +39,7 @@ export default function SwitchMusica() {
         className={styles["toggle__checkbox"]}
         type="checkbox"
         id="alternar-musica"
+        checked={isPlayMusic}
       />
 
       <div className={styles["toggle__switch"]}></div>
