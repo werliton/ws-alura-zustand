@@ -120,3 +120,5 @@ export const useCronometroStore = create<CronometroState>()((set, get) => {
 export const useModo = () => useCronometroStore((state) => state.modoCronometro);
 export const useTempoInicial = () => useCronometroStore((state) => state.tempoInicialSec);
 export const useIntervalId = () => useCronometroStore((state) => state.intervaloId);
+
+export * from "./stopwatch.store";

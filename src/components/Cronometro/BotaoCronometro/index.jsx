@@ -1,25 +1,25 @@
 import styles from "./styles.module.css";
 import play_arrowImg from "/src/assets/imgs/play_arrow.png";
 import pauseImg from "/src/assets/imgs/pause.png";
-import { useCronometroStore } from "../../../store";
+import { useStopWatchStore } from "../../../store";
 
 export default function BotaoCronometro() {
-  const { iniciarCronometro, pararTempo, intervaloId } = useCronometroStore();
+  const { isStarted, start, stop } = useStopWatchStore();
 
   const btnActions = [
     {
-      action: () => iniciarCronometro(),
+      action: () => start(),
       text: "Começar",
       src: play_arrowImg,
     },
     {
-      action: () => pararTempo(),
+      action: () => stop(),
       text: "Parar",
       src: pauseImg,
     },
   ];
 
-  const btnActive = btnActions[Number(!!intervaloId)];
+  const btnActive = btnActions[Number(!!isStarted)];
 
   return (
     <div className={styles["cronometer__primary-button-wrapper"]}>
