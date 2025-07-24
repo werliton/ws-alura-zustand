@@ -109,10 +109,12 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
 
       set({
         intervalId: _intervalId,
-        isStarted: true,
+        isStarted: !get().isStarted,
       });
     },
-    pause: () => {},
+    pause: () => {
+      stopCountdown();
+    },
     reset: () => {},
   };
 });

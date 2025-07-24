@@ -4,7 +4,7 @@ import pauseImg from "/src/assets/imgs/pause.png";
 import { useStopWatchStore } from "../../../store";
 
 export default function BotaoCronometro() {
-  const { isStarted, start, stop } = useStopWatchStore();
+  const { isStarted, start, pause } = useStopWatchStore();
 
   const btnActions = [
     {
@@ -13,7 +13,7 @@ export default function BotaoCronometro() {
       src: play_arrowImg,
     },
     {
-      action: () => stop(),
+      action: () => pause(),
       text: "Parar",
       src: pauseImg,
     },
