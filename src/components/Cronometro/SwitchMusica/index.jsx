@@ -4,12 +4,22 @@ import musicaSom from "/src/assets/sons/luna-rise-part-one.mp3";
 import { useStopWatchStore } from "../../../store";
 
 export default function SwitchMusica() {
-  const musicaRef = useRef(new Audio(musicaSom));
+  const musicaRef = useRef(null);
   const { toggleActiveMusic, isPlayMusic } = useStopWatchStore();
 
+  useEffect(() => {
+    musicaRef.current = new Audio(musicaSom);
+
+    return () => {
+      musicaRef.current?.pause();
+      musicaRef.current = null;
+    };
+  }, [musicaRef]);
+
   function alternarMusica() {
-    const musica = musicaRef.current;
     toggleActiveMusic();
+
+    const musica = musicaRef.current;
 
     if (musica.paused || isPlayMusic) {
       musica.play();
@@ -19,18 +29,10 @@ export default function SwitchMusica() {
   }
 
   useEffect(() => {
-    const musicaElement = musicaRef.current;
-
-    return () => {
-      musicaElement.pause();
-    };
-  }, []);
-
-  useEffect(() => {
     if (!isPlayMusic) {
       musicaRef.current.pause();
     }
-  }, [isPlayMusic]);
+  }, [isPlayMusic, musicaRef]);
 
   return (
     <label className={styles["toggle"]}>
