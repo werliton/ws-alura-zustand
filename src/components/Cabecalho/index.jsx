@@ -3,12 +3,12 @@ import logoImg from "/src/assets/imgs/logo.png";
 import focoImg from "/src/assets/imgs/foco.png";
 import descansoCurtoImg from "/src/assets/imgs/descanso-curto.png";
 import descansoLongoImg from "/src/assets/imgs/descanso-longo.png";
-import { useModo } from "../../store";
+import { useGetActivedMode } from "../../store";
 
 export default function Cabecalho() {
-  const { frases, alias } = useModo();
+  const { frases, alias } = useGetActivedMode();
 
-  const bgImg = {
+  const BGIMG = {
     FOCO: {
       path: focoImg,
     },
@@ -21,7 +21,7 @@ export default function Cabecalho() {
   };
 
   const [primeiroTexto, segundoTexto] = frases;
-  const selectedImg = bgImg[alias].path ?? focoImg;
+  const selectedImg = BGIMG[alias].path ?? focoImg;
 
   return (
     <header className="header">

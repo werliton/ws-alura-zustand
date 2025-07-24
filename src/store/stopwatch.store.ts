@@ -155,3 +155,4 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
 // selectors
 
 export const useCountdownTime = () => useStopWatchStore((state) => state.countdowntime);
+export const useGetActivedMode = () => useStopWatchStore((state) => state.activedMode);
