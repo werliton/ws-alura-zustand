@@ -4,7 +4,7 @@ import styles from "./styles.module.css";
 export default function BotaoModo({ children, modoBotao }) {
   const setModo = useCronometroStore((state) => state.setModoCronometro);
 
-  const activedMode = useModo().id === modoBotao;
+  const activedMode = useModo().alias === modoBotao;
 
   const handleModo = useCallback(() => {
     setModo(modoBotao);

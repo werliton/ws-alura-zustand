@@ -1,16 +1,27 @@
 import styles from "./styles.module.css";
 import logoImg from "/src/assets/imgs/logo.png";
 import focoImg from "/src/assets/imgs/foco.png";
+import descansoCurtoImg from "/src/assets/imgs/descanso-curto.png";
+import descansoLongoImg from "/src/assets/imgs/descanso-longo.png";
+import { useModo } from "../../store";
 
 export default function Cabecalho() {
-  const modoCronometro = {
-    id: "foco",
-    nome: "Foco",
-    frase: ["Otimize sua produtividade,", "mergulhe no que importa."],
-    tempoInicialEmSegundos: 30,
+  const { frases, alias } = useModo();
+
+  const bgImg = {
+    FOCO: {
+      path: focoImg,
+    },
+    "DESCANSO CURTO": {
+      path: descansoCurtoImg,
+    },
+    "DESCANSO LONGO": {
+      path: descansoLongoImg,
+    },
   };
 
-  const [primeiroTexto, segundoTexto] = modoCronometro.frase;
+  const [primeiroTexto, segundoTexto] = frases;
+  const selectedImg = bgImg[alias].path ?? focoImg;
 
   return (
     <header className="header">
@@ -24,7 +35,7 @@ export default function Cabecalho() {
         </h1>
 
         <figure className={styles["header__image-figure"]}>
-          <img className={styles["header__image"]} src={focoImg} alt="" />
+          <img className={styles["header__image"]} src={selectedImg} alt={alias} />
         </figure>
       </section>
     </header>

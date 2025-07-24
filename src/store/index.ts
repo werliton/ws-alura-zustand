@@ -1,5 +1,10 @@
 import { create } from "zustand";
 
+/** @ts-ignore */
+import audioPlaySom from "../assets/sons/play.wav";
+/** @ts-ignore */
+import audioPauseSom from "../assets/sons/pause.mp3";
+
 export enum MODO_CRONOMETRO {
   FOCO = "FOCO",
   DESCANSO_CURTO = "DESCANSO CURTO",
@@ -11,25 +16,32 @@ export type Cronometro = {
   nome: string;
   frases: string[];
   duracaoInicialSec: number;
+  alias?: string;
 };
 
 type CronometroType = Record<MODO_CRONOMETRO, Cronometro>;
 
+const audioPlay = new Audio(audioPlaySom);
+const audioPause = new Audio(audioPauseSom);
+
 export const MODO_CRONOMETRO_STATE: CronometroType = {
   FOCO: {
-    id: "FOCO",
+    id: "foco",
+    alias: "FOCO",
     nome: "Período de foco",
     frases: ["Concentre-se no que importa.", "Cada minuto conta.", "Mantenha o foco e avance."],
     duracaoInicialSec: 25,
   },
   "DESCANSO CURTO": {
-    id: "DESCANSO CURTO",
+    id: "descanso-curto",
+    alias: "DESCANSO CURTO",
     nome: "Período de descanso curto",
     frases: ["Relaxe um pouco.", "Respire fundo.", "Prepare-se para o próximo foco."],
     duracaoInicialSec: 5,
   },
   "DESCANSO LONGO": {
-    id: "DESCANSO LONGO",
+    id: "descanso-longo",
+    alias: "DESCANSO LONGO",
     nome: "Período de descanso longo",
     frases: ["Hora de uma pausa maior.", "Descanse e recarregue.", "Você merece esse tempo."],
     duracaoInicialSec: 15,
@@ -68,6 +80,7 @@ export const useCronometroStore = create<CronometroState>()((set, get) => {
       }),
     iniciarCronometro: () => {
       // definir um setinteval
+      audioPlay.play();
       const novoIntervalId = setInterval(contagemRegressiva, 1000);
       // recuperar e salvar o intervaloId
       set({
@@ -94,6 +107,7 @@ export const useCronometroStore = create<CronometroState>()((set, get) => {
       const { intervaloId } = get();
 
       if (intervaloId) {
+        audioPause.play();
         clearInterval(intervaloId);
         set({
           intervaloId: null,
