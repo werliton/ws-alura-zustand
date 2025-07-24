@@ -4,16 +4,16 @@ import BotoesModos from "./BotoesModos";
 import Timer from "./Timer";
 import SwitchMusica from "./SwitchMusica";
 import BotaoCronometro from "./BotaoCronometro";
-import { useModo } from "../../store";
+import { useTempoInicial } from "../../store";
 
 export default function Cronometro() {
-  const modo = useModo();
+  const tempo = useTempoInicial();
 
   return (
     <div className={styles["cronometer"]}>
       <BotoesModos />
 
-      <Timer time={modo.duracaoInicialSec} />
+      <Timer time={tempo} />
 
       <SwitchMusica />
 

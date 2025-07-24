@@ -39,12 +39,70 @@ export const MODO_CRONOMETRO_STATE: CronometroType = {
 interface CronometroState {
   modoCronometro: Cronometro;
   setModoCronometro: (modo: MODO_CRONOMETRO) => void;
+  tempoInicialSec: number;
+  intervaloId: number | null;
+  resetTempo(): void;
+  decrementTempo(): void;
+  iniciarCronometro(): void;
+  pararTempo(): void;
 }
 
-export const useCronometroStore = create<CronometroState>()((set) => ({
-  modoCronometro: MODO_CRONOMETRO_STATE.FOCO,
-  setModoCronometro: (modo: MODO_CRONOMETRO) =>
-    set({ modoCronometro: MODO_CRONOMETRO_STATE[modo] }),
-}));
+export const useCronometroStore = create<CronometroState>()((set, get) => {
+  const contagemRegressiva = () => {
+    const { tempoInicialSec, decrementTempo, pararTempo } = get();
+    if (tempoInicialSec > 0) {
+      decrementTempo();
+    } else {
+      pararTempo();
+    }
+  };
+
+  return {
+    modoCronometro: MODO_CRONOMETRO_STATE.FOCO,
+    tempoInicialSec: MODO_CRONOMETRO_STATE.FOCO.duracaoInicialSec,
+    intervaloId: null,
+    setModoCronometro: (modo: MODO_CRONOMETRO) =>
+      set({
+        modoCronometro: MODO_CRONOMETRO_STATE[modo],
+        tempoInicialSec: MODO_CRONOMETRO_STATE[modo].duracaoInicialSec,
+      }),
+    iniciarCronometro: () => {
+      // definir um setinteval
+      const novoIntervalId = setInterval(contagemRegressiva, 1000);
+      // recuperar e salvar o intervaloId
+      set({
+        intervaloId: novoIntervalId,
+      });
+    },
+    resetTempo: () => {
+      const { intervaloId } = get();
+
+      if (intervaloId) {
+        clearInterval(intervaloId);
+        set({
+          tempoInicialSec: get().modoCronometro.duracaoInicialSec,
+          intervaloId: null,
+        });
+      }
+    },
+    decrementTempo: () => {
+      set({
+        tempoInicialSec: get().tempoInicialSec - 1,
+      });
+    },
+    pararTempo: () => {
+      const { intervaloId } = get();
+
+      if (intervaloId) {
+        clearInterval(intervaloId);
+        set({
+          intervaloId: null,
+        });
+      }
+    },
+  };
+});
 
 export const useModo = () => useCronometroStore((state) => state.modoCronometro);
+export const useTempoInicial = () => useCronometroStore((state) => state.tempoInicialSec);
+export const useIntervalId = () => useCronometroStore((state) => state.intervaloId);
