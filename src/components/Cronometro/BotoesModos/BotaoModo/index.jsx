@@ -1,20 +1,21 @@
 import { useCallback } from "react";
-import { useCronometroStore, useModo } from "../../../../store";
+import { useStopWatchStore } from "../../../../store";
 import styles from "./styles.module.css";
-export default function BotaoModo({ children, modoBotao }) {
-  const setModo = useCronometroStore((state) => state.setModoCronometro);
 
-  const activedMode = useModo().alias === modoBotao;
+export default function BotaoModo({ children, modoBotao }) {
+  const { setMode, activedMode } = useStopWatchStore();
+
+  const _activedMode = activedMode.alias === modoBotao;
 
   const handleModo = useCallback(() => {
-    setModo(modoBotao);
-  }, [modoBotao, setModo]);
+    setMode(modoBotao);
+  }, [modoBotao, setMode]);
 
   return (
     <button
       className={`
         ${styles["cronometer-modes__button"]}
-        ${activedMode ? styles["cronometer-modes__button--active"] : ""}
+        ${_activedMode ? styles["cronometer-modes__button--active"] : ""}
       `}
       onClick={handleModo}
     >

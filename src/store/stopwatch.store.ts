@@ -16,16 +16,16 @@ export type STOPWATCH = {
 };
 
 interface StopWatchStoreState {
-  stop(): void;
   start(): void;
   pause(): void;
   reset(): void;
-  enableMusic: () => void;
+  enableMusic?: () => void;
+  setMode(mode: STOPWATCH_MODE): void;
   countdowntime: number;
   intervalId: number;
   isPlayMusic: boolean;
   isStarted: boolean;
-  activedMode: {};
+  activedMode: STOPWATCH;
 }
 /** end types */
 
@@ -71,7 +71,7 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
     if (countdowntime > 0) {
       decrementCountdowntime();
     } else {
-      //stop
+      stopCountdown();
     }
   };
 
@@ -80,6 +80,16 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
       countdowntime: get().countdowntime - 1,
     });
   };
+  const stopCountdown = () => {
+    const { intervalId } = get();
+
+    if (intervalId) {
+      clearInterval(intervalId);
+      set({
+        isStarted: false,
+      });
+    }
+  };
 
   return {
     activedMode: STOPWATCH_MODE_STATE.FOCO,
@@ -87,17 +97,19 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
     intervalId: 0,
     isPlayMusic: false,
     isStarted: false,
+    setMode: (mode: STOPWATCH_MODE) => {
+      const _mode = STOPWATCH_MODE_STATE[mode] ?? STOPWATCH_MODE_STATE.FOCO;
+      set({
+        activedMode: _mode,
+        countdowntime: _mode.duracaoInicialSec,
+      });
+    },
     start: () => {
       const _intervalId = setInterval(runStopWatch, 1000);
 
       set({
         intervalId: _intervalId,
         isStarted: true,
-      });
-    },
-    stop: () => {
-      set({
-        isStarted: false,
       });
     },
     pause: () => {},
