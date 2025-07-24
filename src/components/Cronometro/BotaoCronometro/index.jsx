@@ -4,22 +4,30 @@ import pauseImg from "/src/assets/imgs/pause.png";
 import { useStopWatchStore } from "../../../store";
 
 export default function BotaoCronometro() {
-  const { isStarted, start, pause } = useStopWatchStore();
+  const { currentMode, start, pause, reset } = useStopWatchStore();
 
-  const btnActions = [
-    {
+  const btnActions = {
+    start: {
+      id: "start",
       action: () => start(),
       text: "Começar",
       src: play_arrowImg,
     },
-    {
+    pause: {
+      id: "pause",
       action: () => pause(),
       text: "Parar",
       src: pauseImg,
     },
-  ];
+    reset: {
+      id: "reset",
+      action: () => reset(),
+      text: "Reiniciar",
+      src: pauseImg,
+    },
+  };
 
-  const btnActive = btnActions[Number(!!isStarted)];
+  const btnActive = btnActions[currentMode];
 
   return (
     <div className={styles["cronometer__primary-button-wrapper"]}>

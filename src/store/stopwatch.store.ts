@@ -11,6 +11,12 @@ enum STOPWATCH_MODE {
   DESCANSO_LONGO = "DESCANSO LONGO",
 }
 
+enum BUTTON_MODE {
+  start = "start",
+  pause = "pause",
+  reset = "reset",
+}
+
 export type STOPWATCH = {
   id: string;
   nome: string;
@@ -30,6 +36,7 @@ interface StopWatchStoreState {
   isPlayMusic: boolean;
   isStarted: boolean;
   activedMode: STOPWATCH;
+  currentMode: keyof typeof BUTTON_MODE;
 }
 /** end types */
 
@@ -76,6 +83,9 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
     } else {
       stopCountdown();
       pauseMusic();
+      set({
+        currentMode: BUTTON_MODE.reset,
+      });
     }
   };
 
@@ -92,6 +102,7 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
       set({
         isStarted: false,
         isPlayMusic: false,
+        currentMode: BUTTON_MODE.start,
       });
     }
   };
@@ -102,6 +113,7 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
     intervalId: 0,
     isPlayMusic: false,
     isStarted: false,
+    currentMode: BUTTON_MODE.start,
     setMode: (mode: STOPWATCH_MODE) => {
       const _mode = STOPWATCH_MODE_STATE[mode] ?? STOPWATCH_MODE_STATE.FOCO;
       set({
@@ -117,6 +129,7 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
       set({
         intervalId: _intervalId,
         isStarted: !get().isStarted,
+        currentMode: BUTTON_MODE.pause,
       });
     },
     pause: () => {
@@ -127,7 +140,15 @@ export const useStopWatchStore = create<StopWatchStoreState>()((set, get) => {
         isPlayMusic: !get().isPlayMusic,
       });
     },
-    reset: () => {},
+    reset: () => {
+      const { activedMode } = get();
+
+      set({
+        countdowntime: activedMode.duracaoInicialSec,
+        isStarted: false,
+        currentMode: BUTTON_MODE.start,
+      });
+    },
   };
 });
 
